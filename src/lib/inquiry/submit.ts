@@ -42,7 +42,6 @@ export async function sendInquiry(data: InquiryData, honey: string): Promise<Sub
           subject: payload._subject,
           from_name: data.name,
           email: data.email,
-          botcheck: honey ? "1" : "",
           ...Object.fromEntries(Object.entries(payload).filter(([k]) => !k.startsWith("_"))),
         }),
         signal: AbortSignal.timeout(30000),

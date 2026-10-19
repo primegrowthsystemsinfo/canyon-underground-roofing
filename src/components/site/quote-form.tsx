@@ -46,7 +46,8 @@ type Status = "idle" | "submitting" | "success" | "error";
 type OkResponse = Extract<InquiryResponse, { ok: true }>;
 
 function validate(values: Values) {
-  const r = inquirySchema.safeParse(values as InquiryInput);
+  // The hidden bot trap is checked separately (never block a real person on it).
+  const r = inquirySchema.safeParse({ ...values, company: "" } as InquiryInput);
   const errors: Partial<Record<keyof Values, string>> = {};
   if (!r.success) {
     for (const issue of r.error.issues) {
@@ -103,8 +104,11 @@ export function QuoteForm() {
         setStatus("error");
         return;
       }
-      const parsed = inquirySchema.parse(values as InquiryInput);
-      const out = await sendInquiry(parsed, values.company);
+      const parsed = inquirySchema.parse({ ...values, company: "" } as InquiryInput);
+      // Bots fill the hidden field: pretend it worked, send nothing.
+      const out = values.company.trim()
+        ? ({ ok: true, delivery: "provider_accepted" } as const)
+        : await sendInquiry(parsed, "");
       if (out.ok) {
         setResult({ ok: true, id: null, provider: "formsubmit", delivery: out.delivery, message: "" });
         setStatus("success");
@@ -117,7 +121,10 @@ export function QuoteForm() {
       setStatus("error");
     } finally {
       inflight.current = false;
-      requestAnimationFrame(() => alertRef.current?.focus());
+      requestAnimationFrame(() => {
+        alertRef.current?.focus({ preventScroll: true });
+        alertRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+      });
     }
   }
 
@@ -251,8 +258,8 @@ export function QuoteForm() {
 
       {/* Honeypot: hidden from humans, filled by bots */}
       <div className="hp" aria-hidden="true">
-        <label htmlFor={id("company")}>Company website</label>
-        <input id={id("company")} name="company" tabIndex={-1} autoComplete="off" value={values.company} onChange={set("company")} />
+        <label htmlFor={id("company")}>Leave this field empty</label>
+        <input id={id("company")} name="trap_field_x7" type="text" tabIndex={-1} autoComplete="off" autoCorrect="off" autoCapitalize="off" data-lpignore="true" data-1p-ignore="true" data-form-type="other" value={values.company} onChange={set("company")} />
       </div>
 
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-1">
