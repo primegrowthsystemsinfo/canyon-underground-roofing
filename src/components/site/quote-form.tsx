@@ -266,6 +266,9 @@ export function QuoteForm() {
             "Get My Free Quote"
           )}
         </button>
+        {status === "submitting" ? (
+          <p className="text-xs" role="status" style={{ color: "var(--mute)" }}>Sending your request. This can take up to a minute, please keep this page open.</p>
+        ) : null}
         <p className="text-xs" style={{ color: "var(--mute)" }}>No obligation. Your details go only to Canyon Underground.</p>
       </div>
     </form>

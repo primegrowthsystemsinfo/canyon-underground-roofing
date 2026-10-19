@@ -5,6 +5,9 @@ export const SITE = {
   siteUrl: "https://primegrowthsystemsinfo.github.io/canyon-underground-roofing",
   // Where quote requests are emailed. PUBLIC (it ships in the page code); change per client.
   ownerEmail: "gisa37730@gmail.com",
+  // Optional, faster delivery: a free Web3Forms access key (web3forms.com, enter the owner email).
+  // When set, quote requests go through Web3Forms instead of FormSubmit. The key is public by design.
+  web3formsKey: "",
   name: "Canyon Underground",
   legalName: "Canyon Underground",
   tagline: "Roofing Contractor · Las Vegas, NV",
