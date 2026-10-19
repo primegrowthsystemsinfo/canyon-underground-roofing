@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://primegrowthsystemsinfo.github.io/canyon-underground-roofing/sitemap.xml
